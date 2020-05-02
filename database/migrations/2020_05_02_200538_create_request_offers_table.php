@@ -16,11 +16,11 @@ class CreateRequestOffersTable extends Migration
         Schema::create('request_offers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('help_request_id');
-            $table->foreignId('user_helper');
+            $table->foreignId('user_helper_id');
             $table->timestamps();
 
             $table->foreign('help_request_id')->references('id')->on('help_requests');
-            $table->foreign('user_helper')->references('id')->on('users');
+            $table->foreign('user_helper_id')->references('id')->on('users');
         });
     }
 
