@@ -14,6 +14,37 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::namespace('Auth')->group(static function()
+{
+
+    //Routes for guests
+    Route::prefix('guest')->name('guest.')->middleware(['guest'])->group(static function()
+    {
+        //User registration route
+        Route::post('register', 'RegisterController@register')->name('register');
+
+        //User login route
+        Route::post('login', 'RegisterController@login')->name('login');
+
+
+    });
+
+    Route::prefix('users')->name('users.')->middleware([])->group(static function()
+    {
+        //User registration route
+        Route::post('register', 'RegisterController@register')->name('register');
+
+        //User login route
+        Route::post('login', 'RegisterController@login')->name('login');
+
+
+    });
 });
+
+//->prefix('auth')
+//Route::name('api.v1.')->prefix('v1')->middleware('api', 'throttle:60,1')->group(function()
+//{
+//
+//});
+
