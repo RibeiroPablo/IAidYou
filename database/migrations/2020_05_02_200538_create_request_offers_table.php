@@ -17,6 +17,7 @@ class CreateRequestOffersTable extends Migration
             $table->id();
             $table->foreignId('help_request_id');
             $table->foreignId('user_helper_id');
+            $table->boolean('approved')->nullable();
             $table->timestamps();
 
             $table->foreign('help_request_id')->references('id')->on('help_requests');
