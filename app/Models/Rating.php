@@ -2,34 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class Rating extends Model
 {
-    use Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [];
-
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        'rating' => 'integer',
+    ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -48,28 +32,18 @@ class User extends Authenticatable
 //  ██║  ██║███████╗███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
 //  ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
-    public function address()
+    public function userRequest()
     {
-        return $this->belongsTo(Address::class, 'address_id');
+        return $this->belongsTo(User::class, 'user_request_id');
     }
 
-    public function helpRequestsAsked()
+    public function userHelper()
     {
-        return $this->hasMany(HelpRequest::class, 'user_request_id');
+        return $this->belongsTo(User::class, 'user_helper_id');
     }
 
-    public function helpRequestsGiven()
+    public function helpRequest()
     {
-        return $this->hasMany(HelpRequest::class, 'user_helper_id');
-    }
-
-    public function requestOffersMade()
-    {
-        return $this->hasMany(RequestOffer::class, 'help_request_id');
-    }
-
-    public function ratingsReceived()
-    {
-        return $this->hasMany(Rating::class, 'user_helper_id');
+        return $this->belongsTo(HelpRequest::class, 'help_request_id');
     }
 }
