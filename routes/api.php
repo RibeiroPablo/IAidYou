@@ -14,37 +14,48 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::namespace('Auth')->group(static function()
+Route::name('api.v1.')->prefix('v1')->middleware('throttle:60,1')->group(static function()
 {
 
     //Routes for guests
-    Route::prefix('guest')->name('guest.')->middleware(['guest'])->group(static function()
+    Route::namespace('Auth')->prefix('guest')->name('guest.')->middleware(['guest'])->group(static function()
     {
-        //User registration route
+        //register a user
         Route::post('register', 'RegisterController@register')->name('register');
 
-        //User login route
+        //login a user
         Route::post('login', 'RegisterController@login')->name('login');
-
-
     });
 
-    Route::prefix('users')->name('users.')->middleware([])->group(static function()
+
+    Route::prefix('users')->name('users.')->middleware('auth:sanctum')->group(static function()
     {
-        //User registration route
-        Route::post('register', 'RegisterController@register')->name('register');
+        //help categories
+        Route::prefix('help-categories')->name('help_categories.')->group(static function()
+        {
+            //list help categories
+            Route::get('/', 'HelpCategoryController@index')->name('index');
+        });
 
-        //User login route
-        Route::post('login', 'RegisterController@login')->name('login');
+        //help requests
+        Route::prefix('help-requests')->name('help_requests.')->group(static function()
+        {
+            //store new help request
+            Route::post('store', 'HelpRequestController@store')->name('store');
+        });
 
+        //ratings
+        Route::prefix('ratings/{help_request_id}')->name('ratings.')->group(static function()
+        {
+            //store new rating
+            Route::post('store', 'RatingController@store')->name('store');
 
+            //update rating when thumbs up is pressed
+            Route::post('thumbs-up', 'RatingController@thumbsUp')->name('thumbs_up');
+
+            //update rating when thumbs down is pressed
+            Route::post('thumbs-down', 'RatingController@thumbsDown')->name('thumbs_down');
+        });
     });
+
 });
-
-//->prefix('auth')
-//Route::name('api.v1.')->prefix('v1')->middleware('api', 'throttle:60,1')->group(function()
-//{
-//
-//});
-
