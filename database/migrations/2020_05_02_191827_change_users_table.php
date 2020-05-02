@@ -42,7 +42,6 @@ class ChangeUsersTable extends Migration
             $table->rememberToken();
 
             $table->dropForeign('address_id');
-            $table->dropColumn('address_id');
             $table->dropColumn('phone_number');
             $table->dropColumn('type');
             $table->dropColumn('picture');
