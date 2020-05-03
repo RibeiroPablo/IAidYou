@@ -3,9 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class HelpRequest extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'latitude',
+        'longitude',
+    ];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -56,5 +67,51 @@ class HelpRequest extends Model
     public function requestOffers()
     {
         return $this->hasMany(RequestOffer::class, 'help_request_id');
+    }
+
+//  ███████╗ ██████╗ ██████╗ ██████╗ ███████╗███████╗
+//  ██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝
+//  ███████╗██║     ██║   ██║██████╔╝█████╗  ███████╗
+//  ╚════██║██║     ██║   ██║██╔═══╝ ██╔══╝  ╚════██║
+//  ███████║╚██████╗╚██████╔╝██║     ███████╗███████║
+//  ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚══════╝╚══════╝
+
+    /**
+     * Search help requests requested by an user id
+     *
+     * @param $query
+     * @param $user_request_id
+     * @return mixed
+     */
+    public function scopeByUserRequest($query, $user_request_id)
+    {
+        return $query->where('user_request_id', $user_request_id);
+    }
+
+//  ███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██████╗ ███████╗
+//  ████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗██╔══██╗██╔════╝
+//  ██╔████╔██║█████╗     ██║   ███████║██║   ██║██║  ██║███████╗
+//  ██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║██║  ██║╚════██║
+//  ██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██████╔╝███████║
+//  ╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
+
+    /**
+     * Fill and save the request for help
+     *
+     * @param User $user
+     * @param HelpCategory $category
+     * @return bool
+     */
+    public function store(User $user, HelpCategory $category)
+    {
+        $this->fill([
+            'latitude' => $user->address->latitude,
+            'longitude' => $user->address->longitude,
+        ]);
+
+        $this->userRequest()->associate($user);
+        $this->category()->associate($category);
+
+        return $this->save();
     }
 }
