@@ -2,7 +2,7 @@ name: IAidYou
 
 on:
   push:
-    branches: [ fix-deploy-heroku ]
+    branches: [ develop ]
   pull_request:
     branches: [ develop ]
 
