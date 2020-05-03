@@ -62,3 +62,17 @@ jobs:
         run: heroku run php artisan key:generate
       - name: Run Laravel Migrations
         run: heroku run php artisan migrate:fresh --seed --force
+      - name: Install Supervisor
+        run: heroku run apt install supervisor
+      - name: Create Supervisor configurations
+        run: |+
+          cat >/etc/supervisor/conf.d/websockets.conf <<EOF
+            [program:websockets]
+            command=/usr/bin/php /app/artisan websockets:serve
+            numprocs=1
+            autostart=true
+            autorestart=true
+            user=laravel-echo
+          EOF
+      - name: Cat /etc/supervisor/conf.d/websockets.conf
+        run: cat /etc/supervisor/conf.d/websockets.conf
