@@ -71,6 +71,7 @@ class Address extends Model
      */
     public function store(Request $request)
     {
+        //TODO Remove these default values added temporary. For now the app only has a simple input to add the full address
         $this->fill([
             'address' => $request->address,
             'address_2' => $request->input('address_2', null),
