@@ -2,15 +2,15 @@ name: Laravel
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ develop ]
 
 jobs:
-  laravel-tests:
+  testing:
 
-    runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-18.04
+
     steps:
     - uses: actions/checkout@v2
     - name: Copy .env
@@ -30,3 +30,33 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
+  build:
+    needs: testing
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Create .netrc file
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+        run: |+
+          cat >~/.netrc <<EOF
+          machine api.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+          machine git.heroku.com
+              login $HEROKU_EMAIL
+              password $HEROKU_API_KEY
+          EOF
+      - name: Cat ~/.netrc
+        run: cat ~/.netrc
+      - name: Login to Heroku
+        run: heroku login
+      - name: Set Heroku branch
+        run: heroku git:remote -a ${{ secrets.HEROKU_APP_NAME }}
+      - name: Push to Heroku
+        run: git push heroku HEAD:refs/heads/master
+      - name: Set App key
+        run: heroku config:set APP_KEY=${{ secrets.APP_KEY }}
+      - name: Run Key generate
+        run: heroku run php artisan key:generate
