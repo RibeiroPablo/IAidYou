@@ -40,6 +40,9 @@ Route::name('api.v1.')->prefix('v1')->middleware('throttle:60,1')->group(static 
         //help requests
         Route::prefix('help-requests')->name('help_requests.')->group(static function()
         {
+            //list help requests made by an user
+            Route::get('requests_made/{user}', 'HelpRequestController@requestsMade')->name('requests_made');
+
             //store new help request
             Route::post('store', 'HelpRequestController@store')->name('store');
         });
