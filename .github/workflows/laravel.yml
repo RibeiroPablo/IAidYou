@@ -55,7 +55,7 @@ jobs:
       - name: Set Heroku branch
         run: heroku git:remote -a ${{ secrets.HEROKU_APP_NAME }}
       - name: Push to Heroku
-        run: git push heroku refs/heads/fix-deploy-heroku
+        run: git push heroku +HEAD:refs/heads/master
       - name: Set App key
         run: heroku config:set APP_KEY=${{ secrets.APP_KEY }}
       - name: Run Key generate
