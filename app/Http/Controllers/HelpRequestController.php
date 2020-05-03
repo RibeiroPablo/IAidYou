@@ -36,4 +36,9 @@ class HelpRequestController extends Controller
 
         return response()->json(['message' => 'Help requests made retrieved successfully.', 'help_requests' => $helpRequests]);
     }
+
+    public function offerHelp(HelpRequest $helpRequest, $)
+    {
+        dd($helpRequest);
+    }
 }
