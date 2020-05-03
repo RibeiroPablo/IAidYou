@@ -12,7 +12,7 @@ class LoginController extends Controller
     {
         try {
             $user = User::with('address')->byPhoneNumber($request->phone_number)->firstOrFail();
-            return $user->toJson();
+            return response()->json(['message' => 'User successfully logged in.', 'user' => $user]);
         }
         catch (\Exception $e) {
             return response()->json(['message' => 'The user is not registered.'], 404);
