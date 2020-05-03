@@ -3,8 +3,11 @@
 use Illuminate\Support\Str;
 
 //This will extract database credentials from Heroku instance
-$url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+$url = '';
 
+if(!app()->runningUnitTests()){
+    $url = getenv("CLEARDB_DATABASE_URL");
+}
 //$host = $url["host"];
 //$username = $url["user"];
 //$password = $url["pass"];
