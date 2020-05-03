@@ -15,8 +15,13 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
+            'name' => 'required|string',
+            'phone_number' => 'required|string',
+            'type' => 'required|string',
+            'picture' => 'required|string',
+            'address' => 'required|string',
+            'latitude' => 'required|string',
+            'longitude' => 'required|string',
         ];
     }
 }

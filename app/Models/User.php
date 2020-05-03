@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Helpers;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -15,7 +17,12 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'name',
+        'phone_number',
+        'type',
+        'picture',
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -39,6 +46,15 @@ class User extends Authenticatable
     protected $dates = [
         'created_at',
         'updated_at',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'picture_url',
     ];
 
 //  ██████╗ ███████╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
@@ -110,4 +126,69 @@ class User extends Authenticatable
         $this->attributes['phone_number'] = Helpers::onlyNumbers($value);
     }
 
+//   █████╗  ██████╗ ██████╗███████╗███████╗███████╗ ██████╗ ██████╗ ███████╗
+//  ██╔══██╗██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔════╝
+//  ███████║██║     ██║     █████╗  ███████╗███████╗██║   ██║██████╔╝███████╗
+//  ██╔══██║██║     ██║     ██╔══╝  ╚════██║╚════██║██║   ██║██╔══██╗╚════██║
+//  ██║  ██║╚██████╗╚██████╗███████╗███████║███████║╚██████╔╝██║  ██║███████║
+//  ╚═╝  ╚═╝ ╚═════╝ ╚═════╝╚══════╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
+
+    /**
+     * Get the picture URL
+     *
+     * @return string
+     */
+    public function getPictureUrlAttribute()
+    {
+        if(empty($this->picture)) {
+            return null;
+        }
+
+        return asset('storage/' . $this->picture);
+    }
+
+//  ███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██████╗ ███████╗
+//  ████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗██╔══██╗██╔════╝
+//  ██╔████╔██║█████╗     ██║   ███████║██║   ██║██║  ██║███████╗
+//  ██║╚██╔╝██║██╔══╝     ██║   ██╔══██║██║   ██║██║  ██║╚════██║
+//  ██║ ╚═╝ ██║███████╗   ██║   ██║  ██║╚██████╔╝██████╔╝███████║
+//  ╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
+
+    /**
+     * Receive a base64 encodede image and save it into the storage/app/public folder
+     *
+     * @param string $imageBase64
+     * @return string
+     */
+    public function storePicture(string $imageBase64)
+    {
+        $picture = Helpers::decodeBase64Image($imageBase64);
+        $filename = uniqid() . '.' . $picture['extension'];
+        Storage::disk('public')->put($filename, $picture['image'], 'public');
+
+        return $filename;
+    }
+
+    /**
+     * Fill and save the user and it's address
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public function store(Request $request)
+    {
+        $this->fill([
+            'name' => $request->name,
+            'phone_number' => $request->phone_number,
+            'type' => $request->type,
+            'picture' => $this->storePicture($request->picture),
+        ]);
+
+        $address = new Address;
+        $address->store($request);
+
+        $this->address()->associate($address);
+
+        return $this->save();
+    }
 }
