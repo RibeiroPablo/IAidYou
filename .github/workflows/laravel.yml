@@ -60,3 +60,5 @@ jobs:
         run: heroku config:set APP_KEY=${{ secrets.APP_KEY }}
       - name: Run Key generate
         run: heroku run php artisan key:generate
+
+#
