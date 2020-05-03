@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Helpers;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -72,4 +72,42 @@ class User extends Authenticatable
     {
         return $this->hasMany(Rating::class, 'user_helper_id');
     }
+
+//  ███████╗ ██████╗ ██████╗ ██████╗ ███████╗███████╗
+//  ██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝
+//  ███████╗██║     ██║   ██║██████╔╝█████╗  ███████╗
+//  ╚════██║██║     ██║   ██║██╔═══╝ ██╔══╝  ╚════██║
+//  ███████║╚██████╗╚██████╔╝██║     ███████╗███████║
+//  ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚══════╝╚══════╝
+
+    /**
+     * Search an user by phone number
+     *
+     * @param $query
+     * @param $number
+     * @return mixed
+     */
+    public function scopeByPhoneNumber($query, $number)
+    {
+        return $query->where('phone_number', Helpers::onlyNumbers($number));
+    }
+
+//  ███╗   ███╗██╗   ██╗████████╗ █████╗ ████████╗ ██████╗ ██████╗ ███████╗
+//  ████╗ ████║██║   ██║╚══██╔══╝██╔══██╗╚══██╔══╝██╔═══██╗██╔══██╗██╔════╝
+//  ██╔████╔██║██║   ██║   ██║   ███████║   ██║   ██║   ██║██████╔╝███████╗
+//  ██║╚██╔╝██║██║   ██║   ██║   ██╔══██║   ██║   ██║   ██║██╔══██╗╚════██║
+//  ██║ ╚═╝ ██║╚██████╔╝   ██║   ██║  ██║   ██║   ╚██████╔╝██║  ██║███████║
+//  ╚═╝     ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝
+
+    /**
+     * Set the user's phone number to only numbers
+     *
+     * @param string $value
+     * @return void
+     */
+    public function setPhoneNumberAttribute($value)
+    {
+        $this->attributes['phone_number'] = Helpers::onlyNumbers($value);
+    }
+
 }
