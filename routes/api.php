@@ -47,7 +47,7 @@ Route::name('api.v1.')->prefix('v1')->middleware('throttle:60,1')->group(static 
             Route::post('store', 'HelpRequestController@store')->name('store');
 
             //offer to help an elderly person
-            Route::get('offer-help/{request}', 'HelpRequestController@offerHelp')->name('offer_help');
+            Route::get('offer-help/{help_request_id}', 'HelpRequestController@offerHelp')->name('offer_help');
         });
 
         //ratings
