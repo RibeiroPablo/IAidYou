@@ -24,11 +24,11 @@ Route::name('api.v1.')->prefix('v1')->middleware('throttle:60,1')->group(static 
         Route::post('register', 'RegisterController@register')->name('register');
 
         //login a user
-        Route::post('login', 'RegisterController@login')->name('login');
+        Route::post('login', 'LoginController@login')->name('login');
     });
 
-
-    Route::prefix('users')->name('users.')->middleware('auth:sanctum')->group(static function()
+    //->middleware('auth:sanctum')
+    Route::prefix('users')->name('users.')->group(static function()
     {
         //help categories
         Route::prefix('help-categories')->name('help_categories.')->group(static function()
