@@ -18,6 +18,7 @@ class CreateHelpRequestsTable extends Migration
             $table->foreignId('user_request_id');
             $table->foreignId('user_helper_id')->nullable();
             $table->foreignId('category_id');
+            $table->string('status');
             $table->double('latitude');
             $table->double('longitude');
 
