@@ -1,8 +1,8 @@
-name: Laravel
+name: IAidYou
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ fix-deploy-heroku ]
   pull_request:
     branches: [ develop ]
 
@@ -55,8 +55,24 @@ jobs:
       - name: Set Heroku branch
         run: heroku git:remote -a ${{ secrets.HEROKU_APP_NAME }}
       - name: Push to Heroku
-        run: git push heroku develop:master
+        run: git push heroku +HEAD:refs/heads/master
       - name: Set App key
         run: heroku config:set APP_KEY=${{ secrets.APP_KEY }}
       - name: Run Key generate
         run: heroku run php artisan key:generate
+      - name: Run Laravel Migrations
+        run: heroku run php artisan migrate:fresh --seed --force
+#      - name: Install Supervisor
+#        run: heroku run apt install supervisor
+#      - name: Create Supervisor configurations
+#        run: |+
+#          cat >/etc/supervisor/conf.d/websockets.conf <<EOF
+#            [program:websockets]
+#            command=/usr/bin/php /app/artisan websockets:serve
+#            numprocs=1
+#            autostart=true
+#            autorestart=true
+#            user=laravel-echo
+#          EOF
+#      - name: Cat /etc/supervisor/conf.d/websockets.conf
+#        run: cat /etc/supervisor/conf.d/websockets.conf
