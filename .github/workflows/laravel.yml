@@ -1,8 +1,8 @@
-name: Laravel
+name: IAidYou
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ fix-deploy-heroku ]
   pull_request:
     branches: [ develop ]
 
