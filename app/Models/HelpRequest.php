@@ -96,7 +96,7 @@ class HelpRequest extends Model
      */
     public function scopePending($query)
     {
-        return $query->where('status', 'pending');
+        return $query->where('status', 'PENDING');
     }
 
 //  ███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██████╗ ███████╗
@@ -134,6 +134,7 @@ class HelpRequest extends Model
     public function assignOffer($user_id) : bool
     {
         $this->user_helper_id = $user_id;
+        $this->status = 'IN_PROGRESS';
         return $this->save();
     }
 
