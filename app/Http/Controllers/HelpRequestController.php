@@ -19,7 +19,7 @@ class HelpRequestController extends Controller
             $helpRequest = new HelpRequest;
             $helpRequest->store($user, $category);
 
-            $helpRequestsMade = HelpRequest::with(['userHelper:id,name,picture', 'category'])->byUserRequest($user->id)->get();
+            $helpRequestsMade = HelpRequest::getRequestsMadeByUser($user);
 
             return response()->json(['message' => 'Help successfully requested.', 'help_requests' => $helpRequestsMade]);
 
@@ -28,5 +28,12 @@ class HelpRequestController extends Controller
 
             return response()->json(['message' => 'Unable to request the help.', 'error' => $e->getMessage()], 500);
         }
+    }
+
+    public function requestsMade(User $user)
+    {
+        $helpRequests = HelpRequest::getRequestsMadeByUser($user);
+
+        return response()->json(['message' => 'Help requests made retrieved successfully.', 'help_requests' => $helpRequests]);
     }
 }

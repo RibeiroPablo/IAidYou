@@ -114,4 +114,15 @@ class HelpRequest extends Model
 
         return $this->save();
     }
+
+    /**
+     * Retrieve all requests made by an user
+     *
+     * @param User $user
+     * @return mixed
+     */
+    public static function getRequestsMadeByUser(User $user)
+    {
+        return HelpRequest::with(['userHelper:id,name,picture', 'category'])->byUserRequest($user->id)->get();
+    }
 }
