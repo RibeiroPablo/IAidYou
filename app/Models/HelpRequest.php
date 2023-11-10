@@ -88,6 +88,17 @@ class HelpRequest extends Model
         return $query->where('user_request_id', $user_request_id);
     }
 
+    /**
+     * Filter by pending requests
+     *
+     * @param $query
+     * @return mixed
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'PENDING');
+    }
+
 //  ███╗   ███╗███████╗████████╗██╗  ██╗ ██████╗ ██████╗ ███████╗
 //  ████╗ ████║██╔════╝╚══██╔══╝██║  ██║██╔═══██╗██╔══██╗██╔════╝
 //  ██╔████╔██║█████╗     ██║   ███████║██║   ██║██║  ██║███████╗
@@ -112,6 +123,18 @@ class HelpRequest extends Model
         $this->userRequest()->associate($user);
         $this->category()->associate($category);
 
+        return $this->save();
+    }
+
+    /**
+     * Assign Helper to a help request
+     * @param $user_id
+     * @return bool
+     */
+    public function assignOffer($user_id) : bool
+    {
+        $this->user_helper_id = $user_id;
+        $this->status = 'IN_PROGRESS';
         return $this->save();
     }
 
